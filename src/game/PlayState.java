@@ -8,6 +8,7 @@ import engine.fx.animations.Sprite;
 
 public class PlayState extends State
 {
+	Player player;
 	
 	public PlayState()
 	{
@@ -17,6 +18,15 @@ public class PlayState extends State
 		
 		manager = new ObjectManager();
 		Level level = new Level("res/map.txt", tileSet , manager);
+		
+		player = new Player(200, 50, 50, 32);
+		manager.addObject(player);
+		
+	}
+	
+	public void init(GameContainer gc)
+	{
+		player.init(gc);
 	}
 
 	@Override

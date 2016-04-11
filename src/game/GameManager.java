@@ -6,10 +6,11 @@ import engine.Renderer;
 
 public class GameManager extends AbstractGame
 {
+	PlayState level1 = new PlayState();
 	
 	public GameManager()
 	{
-		push(new PlayState());
+		push(level1);
 	}
 	
 	@Override
@@ -22,6 +23,7 @@ public class GameManager extends AbstractGame
 	public void render(GameContainer gc, Renderer r)
 	{
 		peek().render(gc, r);
+		r.setClearColor(0xff7EC0EE);
 	}
 	
 	public static void main(String[] args)
@@ -40,7 +42,6 @@ public class GameManager extends AbstractGame
 	@Override
 	public void init(GameContainer gc)
 	{
-		// TODO Auto-generated method stub
-		
+		level1.init(gc);
 	}
 }

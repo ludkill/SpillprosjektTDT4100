@@ -372,4 +372,14 @@ public class Renderer
 	{
 		drawString(text, color, offX, offY, false, false);
 	}
+
+	public int getClearColor()
+	{
+		return clearColor;
+	}
+
+	public void setClearColor(int clearColor)
+	{
+		this.clearColor = clearColor;
+	}
 }

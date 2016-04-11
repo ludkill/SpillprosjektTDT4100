@@ -13,6 +13,7 @@ public class Tile extends GameObject
 	
 	public Tile(int x, int y, Image sprite, int collisionValue)
 	{
+		setTag("tile");
 		this.x = x;
 		this.y = y;
 		height = 32;
@@ -26,7 +27,7 @@ public class Tile extends GameObject
 	@Override
 	public void update(GameContainer gc, float dt)
 	{
-		
+		updateComponents(gc, dt);
 	}
 
 	@Override
@@ -38,12 +39,22 @@ public class Tile extends GameObject
 	@Override
 	public void componentEvent(String name, GameObject object)
 	{
-		
+
 	}
 
 	@Override
 	public void dispose()
 	{
 		
+	}
+
+	public int getCollisionValue()
+	{
+		return collisionValue;
+	}
+
+	public void setCollisionValue(int collisionValue)
+	{
+		this.collisionValue = collisionValue;
 	}
 }
