@@ -7,12 +7,14 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import engine.fx.Image;
+import engine.fx.ShadowType;
 
 public class Sprite
 {
 	
 	private BufferedImage spriteSheet;
 	private int tileSize = 32;
+	private ShadowType shadowType = ShadowType.NONE;
 	
 	public BufferedImage loadSprite(String path)
 	{	
@@ -40,7 +42,7 @@ public class Sprite
 	
 	public Image getSpriteAsImage(int xGrid, int yGrid)
 	{
-		return(new Image(getSprite(xGrid, yGrid)));
+		return(new Image(getSprite(xGrid, yGrid), shadowType));
 	}
 	
 	public BufferedImage getSpriteSheet()
@@ -71,7 +73,17 @@ public class Sprite
 			return null;
 		}
 		return(new Image(getSprite(id % (spriteSheet.getWidth()/tileSize),
-				id / (spriteSheet.getWidth()/tileSize))));
+				id / (spriteSheet.getWidth()/tileSize)), shadowType));
+	}
+
+	public ShadowType getShadowType()
+	{
+		return shadowType;
+	}
+
+	public void setShadowType(ShadowType shadowType)
+	{
+		this.shadowType = shadowType;
 	}
 	
 }

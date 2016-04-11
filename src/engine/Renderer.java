@@ -125,6 +125,7 @@ public class Renderer
 			for (int y = 0; y < height; y++)
 			{
 				pixels[x + y * width] = clearColor;
+				shadowMap[x + y * width] = ShadowType.NONE;
 			}
 		}
 	}
@@ -254,14 +255,6 @@ public class Renderer
 			int screenX = x0 - light.radius + offX;
 			int screenY = y0 - light.radius + offY;
 			
-			if (power == 1)
-			{
-				setLightMap(screenX, screenY, light.getLightValue(x0, y0));
-			} else
-			{
-				setLightMap(screenX, screenY, Pixel.getColorPower(light.getLightValue(x0, y0), power));
-			}
-			
 			if (x0 == x1 && y0 == y1)
 				break;
 			if (getLightBlock(screenX, screenY) == ShadowType.TOTAL)
@@ -273,10 +266,18 @@ public class Renderer
 				hit = true;
 				power /= 2;
 			}
-			if (getLightBlock(screenX, screenY) == ShadowType.HALF && hit == true)
+			if (getLightBlock(screenX, screenY) == ShadowType.NONE && hit == true)
 				hit = false;
 			if (power <= 0.1)
 				break;
+			
+			if (power == 1)
+			{
+				setLightMap(screenX, screenY, light.getLightValue(x0, y0));
+			} else
+			{
+				setLightMap(screenX, screenY, Pixel.getColorPower(light.getLightValue(x0, y0), power));
+			}
 				
 			e2 = 2 * err;
 			

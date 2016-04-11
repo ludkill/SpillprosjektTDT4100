@@ -9,6 +9,7 @@ import engine.GameContainer;
 import engine.Renderer;
 import engine.components.ObjectManager;
 import engine.fx.Image;
+import engine.fx.ShadowType;
 import engine.fx.animations.Sprite;
 
 public class Level
@@ -80,6 +81,7 @@ public class Level
 				int x = i % levelW;
 				int y = i / levelW;
 				Image sprite = tileSet.getSpriteAsImage(tiles[i]);
+				sprite.shadowType = ShadowType.FADE;
 				int collisionValue = collision[i];
 				manager.addObject(new Tile(x * tileWidth , y * tileHeight, sprite, collisionValue));
 			}

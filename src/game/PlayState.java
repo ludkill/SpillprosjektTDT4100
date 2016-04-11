@@ -9,6 +9,7 @@ import engine.fx.animations.Sprite;
 public class PlayState extends State
 {
 	Player player;
+	Camera camera;
 	
 	public PlayState()
 	{
@@ -22,6 +23,8 @@ public class PlayState extends State
 		player = new Player(200, 50, 50, 32);
 		manager.addObject(player);
 		
+		camera = new Camera();
+		
 	}
 	
 	public void init(GameContainer gc)
@@ -33,6 +36,7 @@ public class PlayState extends State
 	public void update(GameContainer gc, float dt)
 	{
 		manager.updateObjects(gc, dt);
+		camera.update(gc, dt, player);
 	}
 
 	@Override

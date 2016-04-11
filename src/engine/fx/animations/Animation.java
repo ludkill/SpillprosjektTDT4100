@@ -115,12 +115,9 @@ public class Animation
 	}
 	
 	public void update(double dt)
-	{
+	{	
 		if (stopped)
 			return;
-		
-		if (currentFrame == totalFrames && loop == false)
-			stopped = true;
 			
 		deltaTime += dt;
 		
@@ -136,6 +133,9 @@ public class Animation
 			{
 				currentFrame = totalFrames - 1;
 			}
+			
+			if (currentFrame == 0 && loop == false)
+				stopped = true;
 		}
 		
 	}

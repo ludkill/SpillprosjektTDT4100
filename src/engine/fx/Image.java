@@ -11,7 +11,7 @@ public class Image
 	public ShadowType shadowType = ShadowType.NONE;
 	public int[] pixels;
 	
-	public Image(String path)
+	public Image(String path, ShadowType shadowType)
 	{
 		BufferedImage image = null;
 		
@@ -26,17 +26,14 @@ public class Image
 		width = image.getWidth();
 		height = image.getHeight();
 		pixels = image.getRGB(0, 0, width, height, null, 0, width);
+		this.shadowType = shadowType;
 	
 		image.flush();
 	}
 	
-	public Image(BufferedImage image)
+	public Image(String path)
 	{
-		width = image.getWidth();
-		height = image.getHeight();
-		pixels = image.getRGB(0, 0, width, height, null, 0, width);
-		
-		image.flush();
+		this(path, ShadowType.NONE);
 	}
 	
 	public Image(int width, int height, int[] p)
@@ -44,5 +41,20 @@ public class Image
 		this.width = width;
 		this.height = height;
 		this.pixels = p;
+	}
+	
+	public Image(BufferedImage image, ShadowType shadowType)
+	{
+		width = image.getWidth();
+		height = image.getHeight();
+		pixels = image.getRGB(0, 0, width, height, null, 0, width);
+		this.shadowType = shadowType;
+		
+		image.flush();
+	}
+	
+	public Image(BufferedImage image)
+	{
+		this(image, ShadowType.NONE);
 	}
 }

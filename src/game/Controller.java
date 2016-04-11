@@ -19,6 +19,11 @@ public class Controller
 	private boolean jumpKeyPressed = false;
 	private boolean attackKeyPressed = false;
 	
+	private boolean forwardKeyDown = false;
+	private boolean backwardKeyDown = false;
+	private boolean jumpKeyDown = false;
+	private boolean attackKeyDown = false;
+	
 	public Controller()
 	{
 		
@@ -31,10 +36,15 @@ public class Controller
 	
 	public void update(GameContainer gc, float dt)
 	{
-		forwardKeyPressed = (boolean) input.isKeyPressed(forwardKey);
-		backwardKeyPressed = (boolean) input.isKeyPressed(backwardKey);
-		jumpKeyPressed = (boolean) input.isKeyPressed(jumpKey);
-		attackKeyPressed = (boolean) input.isKeyPressed(attackKey);
+		forwardKeyPressed = input.isKeyPressed(forwardKey);
+		backwardKeyPressed = input.isKeyPressed(backwardKey);
+		jumpKeyPressed = input.isKeyPressed(jumpKey);
+		attackKeyPressed = input.isKeyPressed(attackKey);
+		
+		forwardKeyDown = input.isKey(forwardKey);
+		backwardKeyDown = input.isKey(backwardKey);
+		jumpKeyDown = input.isKey(jumpKey);
+		attackKeyDown = input.isKey(attackKey);
 
 	}
 
@@ -116,5 +126,45 @@ public class Controller
 	public void setAttackKeyPressed(boolean attackKeyPressed)
 	{
 		this.attackKeyPressed = attackKeyPressed;
+	}
+
+	public boolean isForwardKeyDown()
+	{
+		return forwardKeyDown;
+	}
+
+	public void setForwardKeyDown(boolean forwardKeyDown)
+	{
+		this.forwardKeyDown = forwardKeyDown;
+	}
+
+	public boolean isBackwardKeyDown()
+	{
+		return backwardKeyDown;
+	}
+
+	public void setBackwardKeyDown(boolean backwardKeyDown)
+	{
+		this.backwardKeyDown = backwardKeyDown;
+	}
+
+	public boolean isJumpKeyDown()
+	{
+		return jumpKeyDown;
+	}
+
+	public void setJumpKeyDown(boolean jumpKeyDown)
+	{
+		this.jumpKeyDown = jumpKeyDown;
+	}
+
+	public boolean isAttackKeyDown()
+	{
+		return attackKeyDown;
+	}
+
+	public void setAttackKeyDown(boolean attackKeyDown)
+	{
+		this.attackKeyDown = attackKeyDown;
 	}
 }
