@@ -59,6 +59,7 @@ public class Player extends GameObject
 	@Override
 	public void update(GameContainer gc, float dt)
 	{
+		
 		prevX = x;
 		prevY = y;
 		

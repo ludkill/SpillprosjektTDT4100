@@ -6,6 +6,8 @@ import engine.Renderer;
 public class Camera
 {
 	private float camX, camY;
+	private float deltaX, deltaY;
+	private float lerp = 1.0f;
 	
 	public Camera()
 	{
@@ -15,8 +17,8 @@ public class Camera
 	
 	public void update(GameContainer gc, float dt, Player player)
 	{
-		camX = player.getX() - gc.getWidth() / 2;
-		camY = player.getY() - gc.getHeight() / 2;
+		camY += ((player.getY() + player.getHeight() / 2) - (camY  + gc.getHeight() / 2)) * lerp * dt;
+		camX += ((player.getX() + player.getWidth() / 2) - (camX + gc.getWidth() / 2)) * lerp * dt;
 	}
 	
 	public void render(GameContainer gc, Renderer r)

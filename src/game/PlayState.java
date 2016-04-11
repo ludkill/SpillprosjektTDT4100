@@ -35,13 +35,14 @@ public class PlayState extends State
 	@Override
 	public void update(GameContainer gc, float dt)
 	{
-		manager.updateObjects(gc, dt);
 		camera.update(gc, dt, player);
+		manager.updateObjects(gc, dt);
 	}
 
 	@Override
 	public void render(GameContainer gc, Renderer r)
 	{
+		camera.render(gc, r);
 		manager.renderObjects(gc, r);
 	}
 

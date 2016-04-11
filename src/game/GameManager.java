@@ -34,7 +34,7 @@ public class GameManager extends AbstractGame
 		gc.setScale(3);
 		gc.setLockFrameRate(false);
 		gc.setClearScreen(true);
-		gc.setDynamicLights(true);
+		gc.setDynamicLights(false);
 		gc.setLightingEnabled(false);
 		gc.start();
 	}
