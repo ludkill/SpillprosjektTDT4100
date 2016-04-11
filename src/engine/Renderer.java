@@ -58,9 +58,11 @@ public class Renderer
 	
 	public ShadowType getLightBlock(int x, int y)
 	{
-
-		x -= 2 * transX;
-		y -= 2 * transY;
+		if (translate)
+		{
+			x -= transX;
+			y -= transY;
+		}
 		
 		if (x < 0 || x >= width || y < 0 || y >= height)
 		{
@@ -71,8 +73,11 @@ public class Renderer
 	
 	public void setLightMap(int x, int y, int color)
 	{
-		x -= transX;
-		y -= transY;
+		if(translate)
+		{
+			x -= transX;
+			y -= transY;			
+		}
 		
 		if (x < 0 || x >= width || y < 0 || y >= height)
 		{
@@ -136,9 +141,11 @@ public class Renderer
 		{
 			for (int y = 0; y < height; y++)
 			{
+				setTranslate(false);
 				setPixel(x, y, Pixel.getLightBlend(pixels[x + y * width], lightmap[x + y * width], ambientLight),
 						shadowMap[x + y * width]);
 				lightmap[x + y * width] = ambientLight;
+				setTranslate(true);
 			}
 		}
 	}
