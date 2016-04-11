@@ -1,21 +1,22 @@
-package test;
+package game;
 
 import engine.GameContainer;
 import engine.Renderer;
 import engine.components.ObjectManager;
 import engine.components.State;
+import engine.fx.animations.Sprite;
 
 public class PlayState extends State
 {
 	
 	public PlayState()
 	{
-//		manager = new ObjectManager();
-//		manager.addObject(new Player(0,0));
-//		manager.addObject(new Ball(152, 112));
-//		manager.addObject(new Enemy(384, 0));
-//		manager.addObject(new Grant(0, 0));
-		manager.addObject(new Function());
+		Sprite tileSet = new Sprite();
+		tileSet.loadSprite("/tileSet.png");
+		
+		
+		manager = new ObjectManager();
+		Level level = new Level("res/map.txt", tileSet , manager);
 	}
 
 	@Override
