@@ -13,7 +13,8 @@ public class Sprite
 {
 	
 	private BufferedImage spriteSheet;
-	private int tileSize = 32;
+	private int width = 32;
+	private int height = 32;
 	private ShadowType shadowType = ShadowType.NONE;
 	
 	public BufferedImage loadSprite(String path)
@@ -37,7 +38,7 @@ public class Sprite
 			return null;
 		}
 		
-		return spriteSheet.getSubimage(xGrid * tileSize, yGrid * tileSize, tileSize, tileSize);
+		return spriteSheet.getSubimage(xGrid * width, yGrid * height, width, height);
 	}
 	
 	public Image getSpriteAsImage(int xGrid, int yGrid)
@@ -54,26 +55,16 @@ public class Sprite
 	{
 		this.spriteSheet = spriteSheet;
 	}
-
-	public int getTileSize()
-	{
-		return tileSize;
-	}
-
-	public void setTileSize(int tileSize)
-	{
-		this.tileSize = tileSize;
-	}
 	
 	public Image getSpriteAsImage(int id)
 	{
-		if(id < 0 || id > (spriteSheet.getWidth()/tileSize) * 
-				(spriteSheet.getHeight()/tileSize))
+		if(id < 0 || id > (spriteSheet.getWidth()/width) * 
+				(spriteSheet.getHeight()/height))
 		{
 			return null;
 		}
-		return(new Image(getSprite(id % (spriteSheet.getWidth()/tileSize),
-				id / (spriteSheet.getWidth()/tileSize)), shadowType));
+		return(new Image(getSprite(id % (spriteSheet.getWidth()/width),
+				id / (spriteSheet.getWidth()/width)), shadowType));
 	}
 
 	public ShadowType getShadowType()
@@ -84,6 +75,26 @@ public class Sprite
 	public void setShadowType(ShadowType shadowType)
 	{
 		this.shadowType = shadowType;
+	}
+
+	public int getWidth()
+	{
+		return width;
+	}
+
+	public void setWidth(int width)
+	{
+		this.width = width;
+	}
+
+	public int getHeight()
+	{
+		return height;
+	}
+
+	public void setHeight(int height)
+	{
+		this.height = height;
 	}
 	
 }

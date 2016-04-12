@@ -21,7 +21,11 @@ public class Tile extends GameObject
 		this.collisionValue = collisionValue;
 		
 		this.sprite = sprite;
-		addComponent(new Collider());
+		if(collisionValue == 1)
+		{
+			
+			addComponent(new Collider());
+		}
 	}
 
 	@Override
