@@ -139,5 +139,9 @@ public class Animation
 		}
 		
 	}
-	
+
+	public boolean isStopped()
+	{
+		return stopped;
+	}
 }

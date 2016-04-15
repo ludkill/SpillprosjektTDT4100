@@ -14,15 +14,26 @@ public class Player extends GameObject
 {
 	private Sprite sprite;
 	private Controller controller;
-	private Animation RightWalkingAnimation;
-	private Animation LeftWalkingAnimation;
-	private Light light;
-	
+	private Animation rightWalkingAnimation;
+	private Animation leftWalkingAnimation;
+	private Animation rightJumpingAnimation;
+	private Animation leftJumpingAnimation;
+	private Animation rightAttackAnimation;
+	private Animation leftAttackAnimation;
+	private Light light;	
 	private float prevX, prevY;
 	private float forceX, forceY;
 	private float speedX, speedY;
 	private boolean grounded = true;
 	private boolean left = true;
+	
+	private boolean walkingLeft = true;
+	private boolean walkingRight = false;
+	private boolean jumpingLeft;
+	private boolean jumpingRight;
+	private boolean attackingLeft;
+	private boolean attackingRight;
+	
 	
 	public Player(int x, int y, int height, int width)
 	{
@@ -39,7 +50,7 @@ public class Player extends GameObject
 		prevY = y;
 		
 		forceX = 0;
-		forceY = 150;
+		forceY = 300;
 		speedX = 0;
 		speedY = 0;
 		
@@ -50,15 +61,51 @@ public class Player extends GameObject
 		sprite.setHeight(48);
 		sprite.setWidth(32);
 		sprite.setShadowType(ShadowType.FADE);
-		Image[] walkingFramesRight = { sprite.getSpriteAsImage(16), sprite.getSpriteAsImage(17),
-				sprite.getSpriteAsImage(18), sprite.getSpriteAsImage(19), sprite.getSpriteAsImage(20),
-				sprite.getSpriteAsImage(21), sprite.getSpriteAsImage(22), sprite.getSpriteAsImage(23) };
-		Image[] walkingFramesLeft = { sprite.getSpriteAsImage(15), sprite.getSpriteAsImage(14),
-				sprite.getSpriteAsImage(13), sprite.getSpriteAsImage(12), sprite.getSpriteAsImage(11),
-				sprite.getSpriteAsImage(10), sprite.getSpriteAsImage(9), sprite.getSpriteAsImage(8) };
+		Image[] walkingFramesRight = { sprite.getSpriteAsImage(16), 
+									   sprite.getSpriteAsImage(17),
+									   sprite.getSpriteAsImage(18), 
+									   sprite.getSpriteAsImage(19), 
+									   sprite.getSpriteAsImage(20),
+									   sprite.getSpriteAsImage(21), 
+									   sprite.getSpriteAsImage(22),
+									   sprite.getSpriteAsImage(23) };
+		
+		Image[] walkingFramesLeft = { sprite.getSpriteAsImage(15), 
+								  	  sprite.getSpriteAsImage(14),
+									  sprite.getSpriteAsImage(13), 
+									  sprite.getSpriteAsImage(12), 
+									  sprite.getSpriteAsImage(11),
+									  sprite.getSpriteAsImage(10), 
+									  sprite.getSpriteAsImage(9), 
+									  sprite.getSpriteAsImage(8) };
+		
+		Image[] jumpingFramesLeft = { sprite.getSpriteAsImage(32), 
+									  sprite.getSpriteAsImage(33),
+									  sprite.getSpriteAsImage(34),
+									  sprite.getSpriteAsImage(35) };
+		
+		Image[] jumpingFramesRight = { sprite.getSpriteAsImage(36), 
+									   sprite.getSpriteAsImage(37),
+									   sprite.getSpriteAsImage(38), 
+									   sprite.getSpriteAsImage(39) };
+		
+		Image[] attackFramesLeft = { sprite.getSpriteAsImage(24), 
+				   					  sprite.getSpriteAsImage(25),
+				   					  sprite.getSpriteAsImage(26), 
+				   					  sprite.getSpriteAsImage(27) };
+		
+		Image[] attackFramesRight = { sprite.getSpriteAsImage(28), 
+					  				  sprite.getSpriteAsImage(29),
+					  				  sprite.getSpriteAsImage(30), 
+					  				  sprite.getSpriteAsImage(31) };
+		
 				
-		RightWalkingAnimation = new Animation(walkingFramesRight, 0.12);
-		LeftWalkingAnimation = new Animation(walkingFramesLeft, 0.12);
+		rightWalkingAnimation = new Animation(walkingFramesRight, 0.12);
+		leftWalkingAnimation = new Animation(walkingFramesLeft, 0.12);
+		rightJumpingAnimation = new Animation(jumpingFramesRight, 0.12);
+		leftJumpingAnimation = new Animation(jumpingFramesLeft, 0.12);
+		rightAttackAnimation = new Animation(attackFramesRight, 0.2);
+		leftAttackAnimation = new Animation(attackFramesLeft, 0.12);
 	}
 	
 	public void init(GameContainer gc)
@@ -81,40 +128,89 @@ public class Player extends GameObject
 			if (controller.isJumpKeyDown())
 			{
 				grounded = false;
-				speedY = -100;
+				speedY = -200;
+				if (left)
+				{
+					stopMovement();
+					playOnceAnimation(leftJumpingAnimation);
+					
+					jumpingLeft = true;
+				}
+				else
+				{
+					stopMovement();
+					playOnceAnimation(rightJumpingAnimation);
+					
+					jumpingRight = true;
+				}
 			}
 			
 			if (controller.isForwardKeyDown())
 			{
 				speedX = 100;
-				RightWalkingAnimation.start();
-				LeftWalkingAnimation.stop();
 				left = false;
+				
+				if (rightAttackAnimation.isStopped())
+				{
+					stopMovement();
+					startAnimation(rightWalkingAnimation);
+					
+					walkingRight = true;
+				}
 			} else if (controller.isBackwardKeyDown())
 			{
 				speedX = -100;
-				RightWalkingAnimation.stop();
-				LeftWalkingAnimation.start();
 				left = true;
+				
+				if (rightAttackAnimation.isStopped())
+				{
+					stopMovement();
+					startAnimation(leftWalkingAnimation);
+					
+					walkingLeft = true;
+				}
 			} else
 			{
 				speedX = 0;
-				RightWalkingAnimation.reset();
-				LeftWalkingAnimation.reset();
-				RightWalkingAnimation.stop();
-				LeftWalkingAnimation.stop();
 			}
 		} else
 		{
 			if (controller.isForwardKeyDown())
 			{
 				forceX = 200;
+				left = false;
+				startAnimation(rightWalkingAnimation);
+				stopMovement();
+			
+				jumpingRight = true;
 			} else if (controller.isBackwardKeyDown())
 			{
 				forceX = -200;
+				left = true;
+				startAnimation(leftWalkingAnimation);
+				stopMovement();
+				
+				jumpingLeft = true;
 			} else
 			{
-				forceX = 0;
+				forceX = -0.01f * speedX * speedX * Math.signum(speedX);
+			}
+		}
+		
+		if(controller.isAttackKeyPressed())
+		{
+			if(left)
+			{
+				stopMovement();
+				playOnceAnimation(leftAttackAnimation);
+				
+				attackingLeft = true;
+			} else
+			{
+				stopMovement();
+				playOnceAnimation(rightAttackAnimation);
+				
+				attackingRight = true;
 			}
 		}
 		
@@ -133,9 +229,10 @@ public class Player extends GameObject
 		x += speedX * dt;
 		y += speedY * dt;
 		
-		RightWalkingAnimation.update(dt);
-		LeftWalkingAnimation.update(dt);
 		
+		updateAnimations(dt);
+		
+		grounded = false;
 		updateComponents(gc, dt);
 	}
 	
@@ -144,12 +241,30 @@ public class Player extends GameObject
 	{
 		if (left)
 		{
-			r.drawImage(LeftWalkingAnimation.getSprite(), (int) (x - 8.5f), (int) (y + 0.5f));
 			r.drawLight(light, (int) (x + 0.5f), (int) (y + 24.5f));
 		} else
 		{
-			r.drawImage(RightWalkingAnimation.getSprite(), (int) (x - 8.5f), (int) (y + 0.5f));
 			r.drawLight(light, (int) (x + 20.5f), (int) (y + 24.5f));
+		}
+		
+		if(walkingLeft)
+		{
+			r.drawImage(leftWalkingAnimation.getSprite(), (int) (x - 8.5f), (int) (y + 0.5f));
+		} else if (walkingRight)
+		{
+			r.drawImage(rightWalkingAnimation.getSprite(), (int) (x - 8.5f), (int) (y + 0.5f));
+		} else if (jumpingLeft)
+		{
+			r.drawImage(leftJumpingAnimation.getSprite(), (int) (x - 8.5f), (int) (y + 0.5f));
+		} else if (jumpingRight)
+		{
+			r.drawImage(rightJumpingAnimation.getSprite(), (int) (x - 8.5f), (int) (y + 0.5f));
+		} else if (attackingLeft)
+		{
+			r.drawImage(leftAttackAnimation.getSprite(), (int) (x - 8.5), (int) (y + 0.5f));
+		} else if (attackingRight)
+		{
+			r.drawImage(rightAttackAnimation.getSprite(), (int) (x - 8.5), (int) (y + 0.5f));
 		}
 	}
 	
@@ -196,6 +311,83 @@ public class Player extends GameObject
 	@Override
 	public void dispose()
 	{
+		
+	}
 	
+	private void updateAnimations(float dt)
+	{
+		rightWalkingAnimation.update(dt);
+		leftWalkingAnimation.update(dt);
+		rightJumpingAnimation.update(dt);
+		leftJumpingAnimation.update(dt);
+		rightAttackAnimation.update(dt);
+		leftAttackAnimation.update(dt);
+	}
+	
+	private void stopAllAnimations()
+	{
+		rightWalkingAnimation.stop();
+		leftWalkingAnimation.stop();
+		rightJumpingAnimation.stop();
+		leftJumpingAnimation.stop();
+		rightAttackAnimation.stop();
+		leftAttackAnimation.stop();
+		rightWalkingAnimation.reset();
+		leftWalkingAnimation.reset();
+		rightJumpingAnimation.reset();
+		leftJumpingAnimation.reset();
+		rightAttackAnimation.reset();
+		leftAttackAnimation.reset();
+	}
+	
+	private void stopAllOtherAnimations(Animation animation)
+	{
+		if (animation != rightWalkingAnimation)
+		{
+			rightWalkingAnimation.stop();
+			rightWalkingAnimation.reset();
+		} else if (animation != leftWalkingAnimation)
+		{
+			leftWalkingAnimation.stop();
+			leftWalkingAnimation.reset();
+		} else if (animation != rightJumpingAnimation)
+		{
+			rightJumpingAnimation.stop();
+			rightJumpingAnimation.reset();
+		} else if (animation != leftJumpingAnimation)
+		{
+			leftJumpingAnimation.stop();
+			leftJumpingAnimation.reset();
+		} else if (animation != rightAttackAnimation)
+		{
+			rightAttackAnimation.stop();
+			rightAttackAnimation.reset();
+		} else if (animation != leftAttackAnimation)
+		{
+			leftAttackAnimation.stop();
+			leftAttackAnimation.reset();
+		}
+	}
+	
+	private void startAnimation(Animation animation)
+	{
+		stopAllOtherAnimations(animation);
+		animation.start();
+	}
+	
+	private void playOnceAnimation(Animation animation)
+	{
+		stopAllAnimations();
+		animation.playOnce();
+	}
+	
+	private void stopMovement()
+	{
+		attackingLeft = false;
+		attackingRight = false;
+		walkingLeft = false;
+		walkingRight = false;
+		jumpingLeft = false;
+		jumpingRight = false;
 	}
 }

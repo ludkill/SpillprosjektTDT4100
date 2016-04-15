@@ -20,7 +20,7 @@ public class Renderer
 	private int[] lightmap;
 	private ShadowType[] shadowMap;
 	private Font font = Font.STANDARD;
-	private int ambientLight = Pixel.getColor(1, 0.1f, 0.2f, 0.3f);
+	private int ambientLight = Pixel.getColor(1, 0.01f, 0.01f, 0.01f);
 	private int clearColor = 0xff000000;
 	
 	private int transX, transY;
