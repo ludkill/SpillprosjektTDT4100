@@ -7,7 +7,7 @@ public class Camera
 {
 	private float camX, camY;
 	private float deltaX, deltaY;
-	private float lerp = 1.0f;
+	private float lerp = 1.5f;
 	
 	public Camera()
 	{

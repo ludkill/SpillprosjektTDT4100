@@ -53,4 +53,9 @@ public class ObjectManager
 		}
 		return null;
 	}
+	
+	public void removeObject(GameObject ob)
+	{
+		while(objects.remove(ob));
+	}
 }

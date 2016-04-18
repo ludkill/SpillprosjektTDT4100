@@ -4,14 +4,20 @@ import engine.GameContainer;
 import engine.Renderer;
 import engine.components.Collider;
 import engine.components.GameObject;
+import engine.components.ObjectManager;
+import engine.components.State;
 import engine.fx.Image;
 import engine.fx.Light;
+import engine.fx.Pixel;
 import engine.fx.ShadowType;
 import engine.fx.animations.Animation;
 import engine.fx.animations.Sprite;
 
 public class Player extends GameObject
 {
+	private State state;
+	private ObjectManager manager;
+	
 	private Sprite sprite;
 	private Controller controller;
 	private Animation rightWalkingAnimation;
@@ -33,9 +39,14 @@ public class Player extends GameObject
 	private boolean jumpingRight;
 	private boolean attackingLeft;
 	private boolean attackingRight;
+	boolean spawnLeftProjectile = false;
+	boolean spawnRightProjectile = false;
+	
+	private int health;
+	private int mana;
 	
 	
-	public Player(int x, int y, int height, int width)
+	public Player(int x, int y, int height, int width, State state)
 	{
 		setTag("player");
 		this.x = x;
@@ -43,6 +54,11 @@ public class Player extends GameObject
 		this.height = height;
 		this.width = width;
 		this.controller = new Controller();
+		this.state = state;
+		this.manager = state.getManager();
+		
+		health = 100;
+		mana = 100;
 		
 		light = new Light(0xffbbddbb, 150);
 		
@@ -121,6 +137,17 @@ public class Player extends GameObject
 		prevY = y;
 		
 		controller.update(gc, dt);
+
+		if(spawnRightProjectile && rightAttackAnimation.isStopped())
+		{
+			manager.addObject(new Projectile((int)(x + 20.5f), (int)(y + 24.5f), 300, 0, manager));
+			spawnRightProjectile = false;
+		}
+		if(spawnLeftProjectile && leftAttackAnimation.isStopped())
+		{
+			manager.addObject(new Projectile((int)(x + 0.5f), (int)(y + 24.5f), -300, 0, manager));
+			spawnLeftProjectile = false;
+		}
 		
 		if (grounded)
 		{
@@ -147,6 +174,11 @@ public class Player extends GameObject
 			
 			if (controller.isForwardKeyDown())
 			{
+				if(left)
+				{
+					spawnLeftProjectile = false;
+				}
+				
 				speedX = 100;
 				left = false;
 				
@@ -159,10 +191,15 @@ public class Player extends GameObject
 				}
 			} else if (controller.isBackwardKeyDown())
 			{
+				if(!left)
+				{
+					spawnRightProjectile = false;
+				}
+				
 				speedX = -100;
 				left = true;
 				
-				if (rightAttackAnimation.isStopped())
+				if (leftAttackAnimation.isStopped())
 				{
 					stopMovement();
 					startAnimation(leftWalkingAnimation);
@@ -172,47 +209,65 @@ public class Player extends GameObject
 			} else
 			{
 				speedX = 0;
+				if(rightAttackAnimation.isStopped() && leftAttackAnimation.isStopped()
+					&& leftJumpingAnimation.isStopped() && rightJumpingAnimation.isStopped())
+				{
+					stopAllAnimations();
+				}
 			}
 		} else
 		{
 			if (controller.isForwardKeyDown())
 			{
+				
 				forceX = 200;
 				left = false;
-				startAnimation(rightWalkingAnimation);
-				stopMovement();
-			
-				jumpingRight = true;
+				
+				if (rightAttackAnimation.isStopped())
+				{
+					startAnimation(rightWalkingAnimation);
+					stopMovement();
+					jumpingRight = true;
+				}	
 			} else if (controller.isBackwardKeyDown())
 			{
 				forceX = -200;
 				left = true;
-				startAnimation(leftWalkingAnimation);
-				stopMovement();
-				
-				jumpingLeft = true;
+				if (leftAttackAnimation.isStopped())
+				{
+					startAnimation(leftWalkingAnimation);
+					stopMovement();
+					jumpingLeft = true;
+				}
 			} else
 			{
 				forceX = -0.01f * speedX * speedX * Math.signum(speedX);
 			}
 		}
 		
-		if(controller.isAttackKeyPressed())
+		if(controller.isAttackKeyDown())
 		{
 			if(left)
 			{
-				stopMovement();
-				playOnceAnimation(leftAttackAnimation);
-				
-				attackingLeft = true;
+				if(leftAttackAnimation.isStopped())
+				{
+					spawnLeftProjectile = true;
+					stopMovement();
+					playOnceAnimation(leftAttackAnimation);
+					attackingLeft = true;
+				}
 			} else
 			{
-				stopMovement();
-				playOnceAnimation(rightAttackAnimation);
-				
-				attackingRight = true;
+				if(rightAttackAnimation.isStopped())
+				{
+					spawnRightProjectile = true;
+					stopMovement();
+					playOnceAnimation(rightAttackAnimation);
+					attackingRight = true;	
+				}
 			}
 		}
+		
 		
 		speedX += forceX * dt;
 		speedY += forceY * dt;
@@ -266,6 +321,10 @@ public class Player extends GameObject
 		{
 			r.drawImage(rightAttackAnimation.getSprite(), (int) (x - 8.5), (int) (y + 0.5f));
 		}
+
+		
+		r.drawFillRect((int) (x-10.5f), (int) (y-5.5f), health * 4 / 10, 4, Pixel.RED);
+		r.drawRect((int) (x-10.5f), (int) (y-5.5f), 40, 4, 0xff000000);
 	}
 	
 	@Override

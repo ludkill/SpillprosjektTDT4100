@@ -20,7 +20,7 @@ public class PlayState extends State
 		manager = new ObjectManager();
 		Level level = new Level("res/map.txt", tileSet , manager);
 		
-		player = new Player(200, 50, 48, 16);
+		player = new Player(200, 50, 48, 16, this);
 		manager.addObject(player);
 		
 		camera = new Camera();
