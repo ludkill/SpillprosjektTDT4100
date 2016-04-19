@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import engine.GameContainer;
 import engine.Renderer;
@@ -50,8 +51,9 @@ public class Level
 		
 		try
 		{
-			File file = new File(path);
-			BufferedReader in = new BufferedReader(new FileReader(file));
+			ClassLoader classLoader = getClass().getClassLoader();
+			InputStreamReader is = new InputStreamReader(classLoader.getResourceAsStream(path));
+			BufferedReader in = new BufferedReader(is);
 			
 			levelW = in.read();
 			levelH = in.read();
@@ -86,5 +88,40 @@ public class Level
 				manager.addObject(new Tile(x * tileWidth , y * tileHeight, sprite, collisionValue));
 			}
 		}
+	}
+
+	public int[] getCollision()
+	{
+		return collision;
+	}
+
+	public int getTileWidth()
+	{
+		return tileWidth;
+	}
+
+	public void setTileWidth(int tileWidth)
+	{
+		this.tileWidth = tileWidth;
+	}
+
+	public int getLevelW()
+	{
+		return levelW;
+	}
+
+	public int getLevelH()
+	{
+		return levelH;
+	}
+
+	public int[] getTiles()
+	{
+		return tiles;
+	}
+
+	public int getTileHeight()
+	{
+		return tileHeight;
 	}
 }

@@ -37,6 +37,7 @@ public class Collider extends Component
 	{
 		this.object.componentEvent(tag, object);
 	}
+	
 
 	public float getX()
 	{

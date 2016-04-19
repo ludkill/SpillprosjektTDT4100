@@ -58,4 +58,9 @@ public class ObjectManager
 	{
 		while(objects.remove(ob));
 	}
+	
+	public void removeObject(String tag)
+	{
+		while(objects.remove(findObject(tag)));
+	}
 }

@@ -5,6 +5,7 @@ import engine.Renderer;
 import engine.components.Collider;
 import engine.components.GameObject;
 import engine.components.ObjectManager;
+import engine.fx.Light;
 import engine.fx.animations.Animation;
 import engine.fx.animations.Sprite;
 
@@ -15,12 +16,16 @@ public class Projectile extends GameObject
 	ObjectManager manager;
 	Animation animation;
 	Sprite sprite = new Sprite();
+	Light light = new Light(0xff008800, 10);
 	
 	
 	public Projectile(int x, int y, int speedX, int speedY, ObjectManager manager)
 	{
+		setTag("projectile");
 		this.x = x;
 		this.y = y;
+		this.width = 5;
+		this.height = 5;
 		this.speedX = speedX;
 		this.speedY = speedY;
 		this.manager = manager;
@@ -43,7 +48,8 @@ public class Projectile extends GameObject
 	@Override
 	public void render(GameContainer gc, Renderer r) 
 	{
-		r.drawFillRect((int) x, (int) y, 5, 5, 0xff00ff00);
+		r.drawFillRect((int) x, (int) y, (int) width, (int) height, 0xff00ff00);
+		r.drawLight(light,(int) (x + width / 2), (int) (y + height / 2));
 	}
 
 	@Override
@@ -57,6 +63,11 @@ public class Projectile extends GameObject
 			}
 			
 			if (object instanceof Tile)
+			{
+				manager.removeObject(this);
+			}
+			
+			if (object instanceof Enemy)
 			{
 				manager.removeObject(this);
 			}

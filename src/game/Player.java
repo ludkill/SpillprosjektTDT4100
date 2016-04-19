@@ -15,7 +15,7 @@ import engine.fx.animations.Sprite;
 
 public class Player extends GameObject
 {
-	private State state;
+	private PlayState state;
 	private ObjectManager manager;
 	
 	private Sprite sprite;
@@ -46,7 +46,7 @@ public class Player extends GameObject
 	private int mana;
 	
 	
-	public Player(int x, int y, int height, int width, State state)
+	public Player(int x, int y, int height, int width, PlayState state)
 	{
 		setTag("player");
 		this.x = x;
@@ -132,6 +132,30 @@ public class Player extends GameObject
 	@Override
 	public void update(GameContainer gc, float dt)
 	{
+		if(y > 1000)
+		{
+			dead = true;
+		}
+		
+		if(health <= 0)
+		{
+			dead = true;
+		}
+		if (dead)
+		{
+			health = 100;
+			x = 100;
+			y = 500;
+			dead = false;
+			mana = 100;
+			state.setScore(0);
+			state.resetEnemies();
+			manager.removeObject("enemy");
+		}
+		if (mana < 100)
+		{
+			mana = Math.max((int)(mana + 5*dt), 100);
+		}
 		
 		prevX = x;
 		prevY = y;
@@ -247,6 +271,16 @@ public class Player extends GameObject
 		
 		if(controller.isAttackKeyDown())
 		{
+//			if(!grounded && controller.isJumpKeyDown())
+//			{
+//				if(mana > 50)
+//				{
+//					mana = (int) Math.max(100-200*dt, 0);
+//					manager.addObject(new Projectile((int)(x + 20.5f), (int)(y + 24.5f), 300, 0, manager));
+//					manager.addObject(new Projectile((int)(x + 0.5f), (int)(y + 24.5f), -300, 0, manager));
+//				}
+//			}
+			
 			if(left)
 			{
 				if(leftAttackAnimation.isStopped())
@@ -448,5 +482,25 @@ public class Player extends GameObject
 		walkingRight = false;
 		jumpingLeft = false;
 		jumpingRight = false;
+	}
+	
+	public float getX()
+	{
+		return x;
+	}
+	
+	public float getY()
+	{
+		return y;
+	}
+
+	public int getHealth()
+	{
+		return health;
+	}
+
+	public void setHealth(int health)
+	{
+		this.health = health;
 	}
 }
